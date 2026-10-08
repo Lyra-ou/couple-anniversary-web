@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Our Distance - 3D Interactive Globe</title>
+  <title>Our Distance - NASA Blue Marble Earth</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
     :root {
@@ -95,13 +95,14 @@
 
     .marker {
       position: absolute;
-      width: 12px;
-      height: 12px;
+      width: 14px;
+      height: 14px;
       border-radius: 50%;
       opacity: 0;
       transform: scale(0.5);
       transition: opacity 0.9s ease, transform 0.9s ease;
       pointer-events: none;
+      z-index: 15;
     }
 
     .marker.visible {
@@ -131,6 +132,7 @@
       filter: blur(8px);
       text-transform: uppercase;
       pointer-events: none;
+      z-index: 14;
     }
 
     .city.visible {
@@ -161,6 +163,7 @@
       transition: opacity 0.8s ease, transform 0.8s ease;
       text-align: center;
       pointer-events: none;
+      z-index: 16;
     }
 
     .distance-box.show {
@@ -202,11 +205,29 @@
       opacity: 0;
       transition: stroke-dashoffset 2.6s ease, opacity 0.6s ease;
       pointer-events: none;
+      z-index: 13;
     }
 
     .route-line.visible {
       opacity: 1;
       stroke-dashoffset: 0;
+    }
+
+    .loading {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: rgba(220, 235, 255, 0.6);
+      font-size: 0.9rem;
+      letter-spacing: 0.2em;
+      z-index: 3;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+
+    .loading.show {
+      opacity: 1;
     }
 
     @keyframes pulse {
@@ -222,6 +243,7 @@
   </style>
 </head>
 <body>
+  <div class="loading show" id="loading">Loading NASA Blue Marble...</div>
   <canvas id="canvas"></canvas>
 
   <div class="ui-overlay">
@@ -269,83 +291,24 @@
     camera.position.z = 2.5;
 
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0x7a9fcc, 0.6);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
 
-    const sunLight = new THREE.DirectionalLight(0xffffff, 1.2);
-    sunLight.position.set(1.5, 1, 2);
+    const sunLight = new THREE.DirectionalLight(0xffffff, 1.3);
+    sunLight.position.set(2, 1.5, 1.5);
     scene.add(sunLight);
 
-    // Create Earth
-    const geometry = new THREE.SphereGeometry(1, 256, 256);
-
-    // Earth texture canvas
-    const canvas2d = document.createElement('canvas');
-    canvas2d.width = 2048;
-    canvas2d.height = 1024;
-    const ctx = canvas2d.getContext('2d');
-
-    // Fill with ocean color
-    ctx.fillStyle = '#0d3e6a';
-    ctx.fillRect(0, 0, canvas2d.width, canvas2d.height);
-
-    // Add continents (simplified)
-    ctx.fillStyle = '#1a5a3a';
-    // North America
-    for (let i = 0; i < 200; i++) {
-      const x = Math.random() * 300 + 200;
-      const y = Math.random() * 250 + 200;
-      ctx.fillRect(x, y, Math.random() * 20 + 5, Math.random() * 20 + 5);
-    }
-    // Europe
-    for (let i = 0; i < 150; i++) {
-      const x = Math.random() * 200 + 700;
-      const y = Math.random() * 150 + 200;
-      ctx.fillRect(x, y, Math.random() * 15 + 3, Math.random() * 15 + 3);
-    }
-    // Asia
-    for (let i = 0; i < 300; i++) {
-      const x = Math.random() * 500 + 1000;
-      const y = Math.random() * 300 + 150;
-      ctx.fillRect(x, y, Math.random() * 20 + 5, Math.random() * 20 + 5);
-    }
-    // Africa
-    for (let i = 0; i < 200; i++) {
-      const x = Math.random() * 250 + 800;
-      const y = Math.random() * 300 + 400;
-      ctx.fillRect(x, y, Math.random() * 18 + 4, Math.random() * 18 + 4);
-    }
-
-    const texture = new THREE.CanvasTexture(canvas2d);
-    const material = new THREE.MeshPhongMaterial({
-      map: texture,
-      shininess: 5,
-    });
-
-    const earth = new THREE.Mesh(geometry, material);
-    scene.add(earth);
-
-    // Atmosphere
-    const atmosphereGeometry = new THREE.SphereGeometry(1.06, 256, 256);
-    const atmosphereMaterial = new THREE.MeshBasicMaterial({
-      color: 0x75bfff,
-      transparent: true,
-      opacity: 0.1,
-      side: THREE.BackSide,
-    });
-    const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
-    scene.add(atmosphere);
-
-    // Glow layer
-    const glowGeometry = new THREE.SphereGeometry(1.04, 128, 128);
-    const glowMaterial = new THREE.MeshBasicMaterial({
-      color: 0x75bfff,
-      transparent: true,
-      opacity: 0.15,
-      side: THREE.BackSide,
-    });
-    const glow = new THREE.Mesh(glowGeometry, glowMaterial);
-    scene.add(glow);
+    // Glow effect layer
+    const canvas2dGlow = document.createElement('canvas');
+    canvas2dGlow.width = 128;
+    canvas2dGlow.height = 128;
+    const ctxGlow = canvas2dGlow.getContext('2d');
+    const gradGlow = ctxGlow.createRadialGradient(64, 64, 0, 64, 64, 90);
+    gradGlow.addColorStop(0, 'rgba(100, 200, 255, 0.4)');
+    gradGlow.addColorStop(0.5, 'rgba(100, 200, 255, 0.1)');
+    gradGlow.addColorStop(1, 'rgba(100, 200, 255, 0)');
+    ctxGlow.fillStyle = gradGlow;
+    ctxGlow.fillRect(0, 0, 128, 128);
 
     // Coordinates
     const HANGZHOU = { lat: 30.2741, lon: 120.1551 }; // 杭州
@@ -392,35 +355,193 @@
     const distanceValue = document.getElementById('distanceValue');
     const routeLine = document.getElementById('routeLine');
     const routeSvg = document.getElementById('routeSvg');
+    const loadingEl = document.getElementById('loading');
 
     let transitionLocked = false;
-    let rotationVelocity = 0.0005;
+    let rotationVelocity = 0.0003;
     let isRotating = true;
+    let earthMesh = null;
+
+    // Load NASA Blue Marble texture
+    const textureLoader = new THREE.TextureLoader();
+    textureLoader.load(
+      'https://www.nasaspaceflight.com/wp-content/uploads/2013/10/earth_lights_lrg.jpg',
+      function (texture) {
+        createEarth(texture);
+      },
+      undefined,
+      function (err) {
+        console.warn('Failed to load primary texture, using fallback', err);
+        // Fallback to a different URL
+        textureLoader.load(
+          'https://eoimages.gsfc.nasa.gov/images/imagerecords/73000/73776/GEBCO_NOAA_8bit_elevation_tidemarked_geo.tif',
+          function (texture) {
+            createEarth(texture);
+          },
+          undefined,
+          function (err2) {
+            console.warn('Fallback also failed, creating procedural Earth');
+            createProceduralEarth();
+          }
+        );
+      }
+    );
+
+    function createEarth(texture) {
+      const geometry = new THREE.SphereGeometry(1, 512, 512);
+      
+      const material = new THREE.MeshPhongMaterial({
+        map: texture,
+        shininess: 3,
+        emissive: 0x1a1a1a,
+      });
+
+      earthMesh = new THREE.Mesh(geometry, material);
+      scene.add(earthMesh);
+
+      // Atmosphere glow
+      const atmosphereGeometry = new THREE.SphereGeometry(1.05, 256, 256);
+      const atmosphereMaterial = new THREE.MeshBasicMaterial({
+        color: 0x87ceeb,
+        transparent: true,
+        opacity: 0.15,
+        side: THREE.BackSide,
+      });
+      const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+      scene.add(atmosphere);
+
+      // Outer glow
+      const glowGeometry = new THREE.SphereGeometry(1.08, 128, 128);
+      const glowTexture = new THREE.CanvasTexture(canvas2dGlow);
+      const glowMaterial = new THREE.MeshBasicMaterial({
+        map: glowTexture,
+        transparent: true,
+        side: THREE.BackSide,
+      });
+      const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+      scene.add(glow);
+
+      loadingEl.classList.remove('show');
+    }
+
+    function createProceduralEarth() {
+      const geometry = new THREE.SphereGeometry(1, 512, 512);
+      
+      // Create canvas texture (high quality procedural)
+      const canvas2d = document.createElement('canvas');
+      canvas2d.width = 2048;
+      canvas2d.height = 1024;
+      const ctx = canvas2d.getContext('2d');
+
+      // Ocean
+      const oceanGradient = ctx.createLinearGradient(0, 0, 0, canvas2d.height);
+      oceanGradient.addColorStop(0, '#0d4a7a');
+      oceanGradient.addColorStop(0.5, '#0a3a5a');
+      oceanGradient.addColorStop(1, '#081f3a');
+      ctx.fillStyle = oceanGradient;
+      ctx.fillRect(0, 0, canvas2d.width, canvas2d.height);
+
+      // Continents with detail
+      const continentColor = '#1a5a3a';
+      ctx.fillStyle = continentColor;
+
+      // North America
+      for (let i = 0; i < 400; i++) {
+        const x = Math.random() * 350 + 150;
+        const y = Math.random() * 280 + 180;
+        const size = Math.random() * 30 + 3;
+        ctx.fillRect(x, y, size, size);
+      }
+
+      // South America
+      for (let i = 0; i < 250; i++) {
+        const x = Math.random() * 200 + 250;
+        const y = Math.random() * 350 + 400;
+        const size = Math.random() * 25 + 2;
+        ctx.fillRect(x, y, size, size);
+      }
+
+      // Europe & Africa
+      for (let i = 0; i < 500; i++) {
+        const x = Math.random() * 400 + 750;
+        const y = Math.random() * 400 + 200;
+        const size = Math.random() * 25 + 3;
+        ctx.fillRect(x, y, size, size);
+      }
+
+      // Asia
+      for (let i = 0; i < 600; i++) {
+        const x = Math.random() * 600 + 1200;
+        const y = Math.random() * 350 + 150;
+        const size = Math.random() * 28 + 3;
+        ctx.fillRect(x, y, size, size);
+      }
+
+      // Australia
+      for (let i = 0; i < 150; i++) {
+        const x = Math.random() * 150 + 1600;
+        const y = Math.random() * 150 + 550;
+        const size = Math.random() * 20 + 2;
+        ctx.fillRect(x, y, size, size);
+      }
+
+      const texture = new THREE.CanvasTexture(canvas2d);
+      texture.magFilter = THREE.LinearFilter;
+      texture.minFilter = THREE.LinearMipmapLinearFilter;
+
+      const material = new THREE.MeshPhongMaterial({
+        map: texture,
+        shininess: 5,
+        emissive: 0x0a0a0a,
+      });
+
+      earthMesh = new THREE.Mesh(geometry, material);
+      scene.add(earthMesh);
+
+      // Atmosphere
+      const atmosphereGeometry = new THREE.SphereGeometry(1.05, 256, 256);
+      const atmosphereMaterial = new THREE.MeshBasicMaterial({
+        color: 0x87ceeb,
+        transparent: true,
+        opacity: 0.18,
+        side: THREE.BackSide,
+      });
+      const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+      scene.add(atmosphere);
+
+      // Glow
+      const glowGeometry = new THREE.SphereGeometry(1.08, 128, 128);
+      const glowTexture = new THREE.CanvasTexture(canvas2dGlow);
+      const glowMaterial = new THREE.MeshBasicMaterial({
+        map: glowTexture,
+        transparent: true,
+        side: THREE.BackSide,
+      });
+      const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+      scene.add(glow);
+
+      loadingEl.classList.remove('show');
+    }
 
     // Mouse move tilt
     document.addEventListener('pointermove', (e) => {
-      if (transitionLocked) return;
+      if (transitionLocked || !earthMesh) return;
       const x = (e.clientX / window.innerWidth) * 2 - 1;
       const y = (e.clientY / window.innerHeight) * 2 - 1;
-      earth.rotation.y = -x * 0.3;
-      earth.rotation.x = y * 0.2;
+      earthMesh.rotation.y = -x * 0.3;
+      earthMesh.rotation.x = y * 0.2;
     });
-
-    // Animation loop
-    function animate() {
-      requestAnimationFrame(animate);
-
-      if (isRotating) {
-        earth.rotation.y += rotationVelocity;
-      }
-
-      renderer.render(scene, camera);
-    }
 
     // Update marker positions
     function updateMarkers() {
+      if (!earthMesh) return;
+
       const chinaPos = latLonToVector3(HANGZHOU.lat, HANGZHOU.lon);
       const readingPos = latLonToVector3(READING.lat, READING.lon);
+
+      // Transform to world coordinates
+      chinaPos.applyQuaternion(earthMesh.quaternion);
+      readingPos.applyQuaternion(earthMesh.quaternion);
 
       const chinaScreen = vector3ToScreen(chinaPos);
       const readingScreen = vector3ToScreen(readingPos);
@@ -433,11 +554,11 @@
       ukMarker.style.top = readingScreen.y + 'px';
       ukMarker.style.transform = 'translate(-50%, -50%)';
 
-      chinaCity.style.left = (chinaScreen.x - 50) + 'px';
-      chinaCity.style.top = (chinaScreen.y + 40) + 'px';
+      chinaCity.style.left = (chinaScreen.x - 60) + 'px';
+      chinaCity.style.top = (chinaScreen.y + 50) + 'px';
 
-      ukCity.style.left = (readingScreen.x + 50) + 'px';
-      ukCity.style.top = (readingScreen.y - 50) + 'px';
+      ukCity.style.left = (readingScreen.x + 60) + 'px';
+      ukCity.style.top = (readingScreen.y - 60) + 'px';
 
       // Update route line
       const points = [chinaScreen.x, chinaScreen.y, readingScreen.x, readingScreen.y];
@@ -446,11 +567,11 @@
 
     // Click to transition
     canvas.addEventListener('click', () => {
-      if (transitionLocked) return;
+      if (transitionLocked || !earthMesh) return;
       transitionLocked = true;
       isRotating = false;
 
-      // Zoom camera
+      // Smooth zoom camera
       let startZ = camera.position.z;
       let targetZ = 1.2;
       let progress = 0;
@@ -458,7 +579,7 @@
       function zoomCamera() {
         progress += 0.05;
         if (progress <= 1) {
-          camera.position.z = startZ + (targetZ - startZ) * progress;
+          camera.position.z = startZ + (targetZ - startZ) * (1 - Math.pow(1 - progress, 3));
           requestAnimationFrame(zoomCamera);
         } else {
           camera.position.z = targetZ;
@@ -473,7 +594,6 @@
       page1.classList.remove('active');
       page2.classList.add('active');
 
-      // Start revealing markers
       setTimeout(() => {
         chinaMarker.classList.add('visible');
         chinaCity.classList.add('visible');
@@ -488,7 +608,6 @@
         routeLine.classList.add('visible');
       }, 6000);
 
-      // Animate distance
       setTimeout(() => {
         distanceBox.classList.add('show');
         const distance = calculateDistance(HANGZHOU.lat, HANGZHOU.lon, READING.lat, READING.lon);
@@ -512,11 +631,20 @@
       requestAnimationFrame(draw);
     }
 
-    // Update positions on every frame
-    renderer.setAnimationLoop((time) => {
-      updateMarkers();
-      animate();
-    });
+    // Animation loop
+    function animate() {
+      requestAnimationFrame(animate);
+
+      if (earthMesh && isRotating) {
+        earthMesh.rotation.y += rotationVelocity;
+      }
+
+      if (earthMesh) {
+        updateMarkers();
+      }
+
+      renderer.render(scene, camera);
+    }
 
     // Handle window resize
     window.addEventListener('resize', () => {
