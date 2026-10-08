@@ -3,16 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Our Distance</title>
+  <title>Our Distance - Realistic 3D Earth</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
     :root {
-      --bg-1: #02070f;
-      --bg-2: #06182c;
-      --bg-3: #0b1f35;
-      --text: #edf8ff;
-      --soft: rgba(218, 230, 255, 0.7);
-      --glow: rgba(120, 198, 255, 0.9);
+      --bg-1: #010409;
+      --bg-2: #05121f;
+      --bg-3: #0a1a2e;
+      --text: #e8f4ff;
     }
 
     * { box-sizing: border-box; }
@@ -22,12 +20,9 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background:
-        radial-gradient(circle at 50% 50%, rgba(31, 78, 140, 0.12), transparent 28%),
-        linear-gradient(180deg, var(--bg-1), var(--bg-2) 35%, var(--bg-3));
+      background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 40%, var(--bg-3) 100%);
       color: var(--text);
       font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-      letter-spacing: .04em;
     }
 
     body::before {
@@ -35,25 +30,23 @@
       position: fixed;
       inset: 0;
       pointer-events: none;
-      background:
-        radial-gradient(circle at 12% 16%, rgba(255,255,255,.9) 0 1px, transparent 2px),
-        radial-gradient(circle at 24% 72%, rgba(255,255,255,.75) 0 1.1px, transparent 2.2px),
-        radial-gradient(circle at 44% 30%, rgba(255,255,255,.82) 0 0.9px, transparent 1.8px),
-        radial-gradient(circle at 66% 18%, rgba(255,255,255,.78) 0 1px, transparent 2px),
-        radial-gradient(circle at 82% 56%, rgba(255,255,255,.82) 0 1.1px, transparent 2.2px),
-        radial-gradient(circle at 92% 38%, rgba(255,255,255,.8) 0 1px, transparent 2px),
-        radial-gradient(circle at 70% 78%, rgba(255,255,255,.72) 0 1px, transparent 2px),
-        radial-gradient(circle at 48% 82%, rgba(255,255,255,.78) 0 1px, transparent 2px);
-      opacity: .82;
-      filter: blur(0.2px);
       z-index: 1;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(255,255,255,0.95) 0 0.8px, transparent 1.6px),
+        radial-gradient(circle at 25% 75%, rgba(255,255,255,0.8) 0 1px, transparent 2px),
+        radial-gradient(circle at 38% 35%, rgba(255,255,255,0.85) 0 0.9px, transparent 1.8px),
+        radial-gradient(circle at 55% 65%, rgba(255,255,255,0.75) 0 1.1px, transparent 2.2px),
+        radial-gradient(circle at 72% 25%, rgba(255,255,255,0.82) 0 0.9px, transparent 1.8px),
+        radial-gradient(circle at 88% 60%, rgba(255,255,255,0.78) 0 1px, transparent 2px),
+        radial-gradient(circle at 92% 40%, rgba(255,255,255,0.8) 0 1.1px, transparent 2.1px),
+        radial-gradient(circle at 18% 58%, rgba(255,255,255,0.72) 0 1px, transparent 2px);
+      opacity: 0.85;
+      filter: blur(0.1px);
     }
 
     #canvas {
       position: fixed;
       inset: 0;
-      width: 100%;
-      height: 100%;
       display: block;
       z-index: 0;
     }
@@ -81,22 +74,23 @@
       bottom: 8%;
       transform: translateX(-50%);
       font-size: 12px;
-      letter-spacing: 0.45em;
+      letter-spacing: 0.5em;
       text-transform: uppercase;
-      color: rgba(218, 232, 255, 0.44);
+      color: rgba(210, 230, 255, 0.42);
       user-select: none;
-      animation: pulse 3s ease-in-out infinite;
+      animation: pulse 3.2s ease-in-out infinite;
     }
 
     .marker {
       position: absolute;
-      width: 12px;
-      height: 12px;
+      width: 14px;
+      height: 14px;
       border-radius: 50%;
       opacity: 0;
-      transform: scale(0.3);
+      transform: scale(0.2);
       pointer-events: none;
-      transition: opacity .9s ease, transform .9s ease;
+      transition: opacity 0.85s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.85s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 15;
     }
 
     .marker.visible {
@@ -105,13 +99,19 @@
     }
 
     .marker.china {
-      background: #8de8ff;
-      box-shadow: 0 0 0 2px rgba(141, 232, 255, 0.18), 0 0 26px rgba(141, 232, 255, 0.9), 0 0 50px rgba(141, 232, 255, 0.5);
+      background: #4dd9ff;
+      box-shadow: 
+        0 0 0 3px rgba(77, 217, 255, 0.15),
+        0 0 24px rgba(77, 217, 255, 0.95),
+        0 0 48px rgba(77, 217, 255, 0.6);
     }
 
     .marker.uk {
-      background: #e1ebff;
-      box-shadow: 0 0 0 2px rgba(225, 235, 255, 0.18), 0 0 26px rgba(225, 235, 255, 0.85), 0 0 50px rgba(200, 220, 255, 0.5);
+      background: #d5e5ff;
+      box-shadow: 
+        0 0 0 3px rgba(213, 229, 255, 0.15),
+        0 0 24px rgba(213, 229, 255, 0.9),
+        0 0 48px rgba(180, 210, 255, 0.5);
     }
 
     .city {
@@ -119,13 +119,14 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       opacity: 0;
-      transform: translateY(14px) scale(.94);
-      transition: opacity 1s ease, transform 1s ease, filter 1s ease;
-      filter: blur(10px);
+      transform: translateY(16px) scale(0.9);
+      transition: opacity 0.95s ease, transform 0.95s ease, filter 0.95s ease;
+      filter: blur(12px);
       text-transform: uppercase;
       pointer-events: none;
+      z-index: 14;
     }
 
     .city.visible {
@@ -135,16 +136,17 @@
     }
 
     .city .name {
-      font-size: clamp(0.72rem, 1vw, 1.2rem);
-      letter-spacing: 0.22em;
+      font-size: clamp(0.75rem, 1.1vw, 1.25rem);
+      letter-spacing: 0.2em;
       font-weight: 600;
-      text-shadow: 0 0 18px rgba(140,208,255,0.8);
+      text-shadow: 0 0 20px rgba(120, 210, 255, 0.85);
     }
 
     .city .country {
-      font-size: clamp(0.52rem, 0.8vw, 0.84rem);
+      font-size: clamp(0.55rem, 0.8vw, 0.88rem);
       letter-spacing: 0.26em;
-      color: rgba(210, 223, 255, 0.7);
+      color: rgba(200, 220, 255, 0.75);
+      text-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
     }
 
     .route-line {
@@ -154,37 +156,42 @@
       height: 100%;
       pointer-events: none;
       z-index: 10;
-      opacity: 0;
-      transition: opacity .8s ease;
     }
 
-    .route-line.visible {
-      opacity: 1;
+    .route-line svg {
+      width: 100%;
+      height: 100%;
     }
 
     .route-line polyline {
       fill: none;
-      stroke: rgba(125, 208, 255, 0.7);
-      stroke-width: 2;
+      stroke: rgba(110, 200, 255, 0.75);
+      stroke-width: 2.5;
       stroke-linecap: round;
       stroke-linejoin: round;
-      stroke-dasharray: 800;
-      stroke-dashoffset: 800;
-      filter: drop-shadow(0 0 8px rgba(125, 208, 255, 0.8));
-      transition: stroke-dashoffset 2.8s ease;
+      stroke-dasharray: 900;
+      stroke-dashoffset: 900;
+      opacity: 0;
+      filter: drop-shadow(0 0 10px rgba(110, 200, 255, 0.85));
+      transition: stroke-dashoffset 3s cubic-bezier(0.42, 0, 0.58, 1), opacity 0.7s ease;
     }
 
     .route-line.visible polyline {
+      opacity: 1;
       stroke-dashoffset: 0;
     }
 
     .route-particle {
       position: absolute;
-      width: 7px;
-      height: 7px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      background: rgba(180, 233, 255, 1);
-      box-shadow: 0 0 18px rgba(180, 233, 255, 1), 0 0 34px rgba(180, 233, 255, 0.8);
+      background: #b4e9ff;
+      box-shadow: 
+        0 0 0 1px rgba(180, 233, 255, 0.3),
+        0 0 16px rgba(180, 233, 255, 1),
+        0 0 32px rgba(180, 233, 255, 0.8),
+        0 0 48px rgba(100, 200, 255, 0.4);
       opacity: 0;
       pointer-events: none;
       z-index: 12;
@@ -198,10 +205,10 @@
     .distance-box {
       position: absolute;
       left: 50%;
-      bottom: 12%;
-      transform: translateX(-50%) translateY(26px);
+      bottom: 14%;
+      transform: translateX(-50%) translateY(30px);
       opacity: 0;
-      transition: opacity .8s ease, transform .8s ease;
+      transition: opacity 0.85s ease, transform 0.85s ease;
       text-align: center;
       pointer-events: none;
       z-index: 16;
@@ -213,41 +220,65 @@
     }
 
     .distance-box .label {
-      font-size: clamp(0.72rem, 1vw, 1rem);
+      font-size: clamp(0.75rem, 1.05vw, 1.1rem);
       letter-spacing: 0.18em;
-      color: rgba(224, 234, 255, 0.8);
+      color: rgba(220, 238, 255, 0.85);
+      text-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
     }
 
     .distance-box .value {
-      margin-top: .5rem;
-      font-size: clamp(2.2rem, 3vw, 3.8rem);
+      margin-top: 0.6rem;
+      font-size: clamp(2.4rem, 3.2vw, 4rem);
       font-weight: 300;
-      letter-spacing: 0.08em;
-      color: #edf6ff;
-      text-shadow: 0 0 32px rgba(160, 220, 255, 0.6);
+      letter-spacing: 0.06em;
+      color: #ecf6ff;
+      text-shadow: 
+        0 0 40px rgba(150, 220, 255, 0.65),
+        0 0 80px rgba(100, 180, 255, 0.3),
+        0 2px 16px rgba(0, 0, 0, 0.7);
       line-height: 1;
     }
 
     .distance-box .unit {
-      margin-top: .3rem;
-      font-size: clamp(0.68rem, 0.7vw, 0.9rem);
-      letter-spacing: 0.14em;
-      color: rgba(212, 224, 255, 0.72);
+      margin-top: 0.4rem;
+      font-size: clamp(0.7rem, 0.85vw, 1rem);
+      letter-spacing: 0.15em;
+      color: rgba(200, 220, 255, 0.75);
+      text-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: 0.32; transform: translateX(-50%) scale(1); }
-      50% { opacity: 0.8; transform: translateX(-50%) scale(1.03); }
+      0%, 100% { opacity: 0.3; transform: translateX(-50%) scale(1); }
+      50% { opacity: 0.85; transform: translateX(-50%) scale(1.04); }
+    }
+
+    .loading {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: rgba(200, 230, 255, 0.65);
+      font-size: 0.95rem;
+      letter-spacing: 0.3em;
+      z-index: 3;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      text-transform: uppercase;
+    }
+
+    .loading.show {
+      opacity: 1;
     }
 
     @media (max-width: 720px) {
-      .click-hint { letter-spacing: 0.3em; }
-      .city .name { letter-spacing: 0.14em; }
-      .city .country { letter-spacing: 0.18em; }
+      .click-hint { letter-spacing: 0.35em; font-size: 11px; }
+      .city .name { letter-spacing: 0.15em; }
+      .city .country { letter-spacing: 0.2em; }
     }
   </style>
 </head>
 <body>
+  <div class="loading show" id="loading">Initializing Earth...</div>
   <canvas id="canvas"></canvas>
 
   <div class="page page-1 active" id="page1">
@@ -268,122 +299,228 @@
       <div class="country">United Kingdom</div>
     </div>
 
-    <svg class="route-line" id="routeSvg" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid meet">
-      <polyline id="routeLine" points="180,420 500,320 820,260"></polyline>
-    </svg>
+    <div class="route-line" id="routeLine">
+      <svg viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid meet">
+        <polyline id="routePolyline" points="200,420 500,280 800,260"></polyline>
+      </svg>
+    </div>
 
     <div class="route-particle" id="routeParticle"></div>
 
     <div class="distance-box" id="distanceBox">
-      <div class="label">我们的距离:</div>
+      <div class="label">我们的距离</div>
       <div class="value" id="distanceValue">0</div>
       <div class="unit">公里</div>
     </div>
   </div>
 
   <script>
+    // ========== Scene Setup ==========
     const canvas = document.getElementById('canvas');
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 2000);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 3000);
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, precision: 'highp' });
+
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x000000, 0);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-    camera.position.set(0, 0, 3.2);
+    camera.position.set(0, 0, 2.8);
 
-    const ambient = new THREE.AmbientLight(0xffffff, 0.45);
-    scene.add(ambient);
+    // ========== Lighting ==========
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.42);
+    scene.add(ambientLight);
 
-    const dir = new THREE.DirectionalLight(0xffffff, 1.2);
-    dir.position.set(1.8, 1.2, 2.2);
-    scene.add(dir);
+    const sunLight = new THREE.DirectionalLight(0xffffff, 1.3);
+    sunLight.position.set(2.5, 1.5, 2.2);
+    sunLight.castShadow = true;
+    scene.add(sunLight);
 
-    const earthCanvas = document.createElement('canvas');
-    earthCanvas.width = 2048;
-    earthCanvas.height = 1024;
-    const ctx = earthCanvas.getContext('2d');
+    const rimLight = new THREE.DirectionalLight(0x5a8fd4, 0.25);
+    rimLight.position.set(-2.2, 0.3, -1.8);
+    scene.add(rimLight);
 
-    const ocean = ctx.createLinearGradient(0, 0, 0, earthCanvas.height);
-    ocean.addColorStop(0, '#0a3b6a');
-    ocean.addColorStop(0.35, '#0c456f');
-    ocean.addColorStop(0.7, '#082f4d');
-    ocean.addColorStop(1, '#061b30');
-    ctx.fillStyle = ocean;
-    ctx.fillRect(0, 0, earthCanvas.width, earthCanvas.height);
+    // ========== Create Realistic Earth Texture ==========
+    function createRealisticEarthTexture() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 4096;
+      canvas.height = 2048;
+      const ctx = canvas.getContext('2d');
 
-    function addLandBlob(x, y, w, h, color) {
-      ctx.fillStyle = color;
-      ctx.beginPath();
-      ctx.moveTo(x, y + h * 0.2);
-      for (let i = 0; i < 12; i++) {
-        const px = x + (i / 11) * w + (Math.random() - 0.5) * 25;
-        const py = y + (Math.random() - 0.2) * h;
-        ctx.lineTo(px, py);
+      // Deep ocean base with gradient
+      const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      grad.addColorStop(0, '#0f3d6b');
+      grad.addColorStop(0.25, '#0d4578');
+      grad.addColorStop(0.5, '#0a325d');
+      grad.addColorStop(0.75, '#091c38');
+      grad.addColorStop(1, '#050c18');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Add subtle water patterns
+      ctx.strokeStyle = 'rgba(50, 120, 180, 0.08)';
+      ctx.lineWidth = 0.3;
+      for (let y = 0; y < canvas.height; y += 80) {
+        ctx.beginPath();
+        for (let x = 0; x < canvas.width; x += 40) {
+          ctx.lineTo(x + Math.sin(y / 100) * 15, y + Math.cos(x / 100) * 10);
+        }
+        ctx.stroke();
       }
-      ctx.bezierCurveTo(x + w * 0.75, y + h * 0.9, x + w * 0.55, y + h * 1.1, x + w * 0.1, y + h * 0.96);
-      ctx.closePath();
-      ctx.fill();
+
+      // Realistic continent colors
+      const landPalette = [
+        { base: '#2d6e44', light: '#4a8f5e', shadow: '#1a4a2a' },
+        { base: '#3a7a52', light: '#5fa878', shadow: '#1f5035' },
+        { base: '#5a7f3a', light: '#7fa858', shadow: '#3a5520' },
+        { base: '#8b7942', light: '#a89860', shadow: '#6b5922' },
+        { base: '#6d5840', light: '#8a7558', shadow: '#4d3820' }
+      ];
+
+      function drawRealisticLandmass(x, y, width, height, palette, complexity) {
+        for (let i = 0; i < complexity; i++) {
+          const color = palette[Math.floor(Math.random() * palette.length)];
+          const shade = Math.random();
+          
+          let fillColor;
+          if (shade < 0.3) {
+            fillColor = color.shadow;
+          } else if (shade > 0.7) {
+            fillColor = color.light;
+          } else {
+            fillColor = color.base;
+          }
+          
+          ctx.fillStyle = fillColor;
+          const px = x + Math.random() * width;
+          const py = y + Math.random() * height;
+          const size = Math.random() * 50 + 8;
+          
+          ctx.beginPath();
+          ctx.ellipse(px, py, size * 1.2, size * 0.8, Math.random() * Math.PI, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      // North America
+      drawRealisticLandmass(200, 220, 420, 280, landPalette, 800);
+
+      // South America
+      drawRealisticLandmass(320, 520, 200, 300, landPalette, 500);
+
+      // Europe
+      drawRealisticLandmass(850, 240, 220, 160, landPalette, 450);
+
+      // Africa
+      drawRealisticLandmass(950, 480, 300, 380, landPalette, 700);
+
+      // Middle East & Asia Minor
+      drawRealisticLandmass(1150, 380, 280, 240, landPalette, 550);
+
+      // Central Asia
+      drawRealisticLandmass(1280, 260, 320, 240, landPalette, 600);
+
+      // East Asia
+      drawRealisticLandmass(1600, 300, 380, 300, landPalette, 750);
+
+      // Southeast Asia
+      drawRealisticLandmass(1750, 500, 220, 180, landPalette, 400);
+
+      // Australia
+      drawRealisticLandmass(1800, 620, 180, 160, landPalette, 380);
+
+      // Greenland
+      drawRealisticLandmass(580, 100, 140, 160, landPalette, 300);
+
+      // Antarctica
+      ctx.fillStyle = '#2a5070';
+      for (let i = 0; i < 400; i++) {
+        ctx.fillRect(Math.random() * canvas.width, 920 + Math.random() * 128, Math.random() * 25 + 3, Math.random() * 20 + 2);
+      }
+
+      // Add cloud coverage simulation
+      ctx.fillStyle = 'rgba(200, 220, 245, 0.15)';
+      for (let i = 0; i < 300; i++) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        const w = Math.random() * 80 + 20;
+        const h = Math.random() * 40 + 10;
+        ctx.fillRect(x, y, w, h);
+      }
+
+      // Atmospheric scattering effect
+      ctx.fillStyle = 'rgba(100, 180, 255, 0.08)';
+      for (let i = 0; i < 600; i++) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        ctx.fillRect(x, y, 3, 3);
+      }
+
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.magFilter = THREE.LinearFilter;
+      texture.minFilter = THREE.LinearMipmapLinearFilter;
+      if (renderer.capabilities.getMaxAnisotropy) {
+        texture.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), 16);
+      }
+      return texture;
     }
 
-    const landColors = ['#2f6d43', '#3d7e4f', '#5f7d3a', '#8b6a40', '#5d4a2f'];
-    addLandBlob(520, 200, 430, 180, landColors[0]);
-    addLandBlob(950, 250, 320, 160, landColors[1]);
-    addLandBlob(1150, 420, 260, 240, landColors[2]);
-    addLandBlob(840, 510, 210, 220, landColors[3]);
-    addLandBlob(700, 180, 150, 120, landColors[4]);
-    addLandBlob(1550, 250, 240, 170, landColors[1]);
-    addLandBlob(1450, 600, 220, 120, landColors[3]);
-
-    for (let i = 0; i < 1000; i++) {
-      const x = Math.random() * earthCanvas.width;
-      const y = Math.random() * earthCanvas.height;
-      const alpha = Math.random() * 0.2 + 0.05;
-      ctx.fillStyle = `rgba(255,255,255,${alpha})`;
-      ctx.fillRect(x, y, 2, 2);
-    }
-
-    const texture = new THREE.CanvasTexture(earthCanvas);
-    texture.anisotropy = renderer.capabilities.getMaxAnisotropy ? renderer.capabilities.getMaxAnisotropy() : 1;
-
-    const earthGeo = new THREE.SphereGeometry(1.18, 256, 256);
-    const earthMat = new THREE.MeshPhongMaterial({
-      map: texture,
-      shininess: 8,
-      emissive: 0x0d1d2d,
-      emissiveIntensity: 0.12,
+    // ========== Create Earth ==========
+    const earthGeometry = new THREE.IcosahedronGeometry(1.2, 128);
+    const earthTexture = createRealisticEarthTexture();
+    const earthMaterial = new THREE.MeshPhongMaterial({
+      map: earthTexture,
+      shininess: 6,
+      emissive: 0x0d1620,
+      emissiveMap: earthTexture,
+      emissiveIntensity: 0.18,
+      side: THREE.FrontSide,
     });
 
-    const earth = new THREE.Mesh(earthGeo, earthMat);
-    earth.rotation.y = -0.8;
+    const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+    earth.castShadow = true;
+    earth.receiveShadow = true;
+    earth.rotation.z = 0.2;
     scene.add(earth);
 
-    const atmosphere = new THREE.Mesh(
-      new THREE.SphereGeometry(1.22, 128, 128),
-      new THREE.MeshBasicMaterial({
-        color: 0x8fd7ff,
-        transparent: true,
-        opacity: 0.16,
-        side: THREE.BackSide,
-      })
-    );
-    scene.add(atmosphere);
+    // Atmosphere layers
+    const atmos1Geo = new THREE.IcosahedronGeometry(1.228, 64);
+    const atmos1Mat = new THREE.MeshBasicMaterial({
+      color: 0x7fbdff,
+      transparent: true,
+      opacity: 0.22,
+      side: THREE.BackSide,
+    });
+    const atmos1 = new THREE.Mesh(atmos1Geo, atmos1Mat);
+    scene.add(atmos1);
 
-    const outerGlow = new THREE.Mesh(
-      new THREE.SphereGeometry(1.32, 128, 128),
-      new THREE.MeshBasicMaterial({
-        color: 0x7bc7ff,
-        transparent: true,
-        opacity: 0.08,
-        side: THREE.BackSide,
-      })
-    );
-    scene.add(outerGlow);
+    const atmos2Geo = new THREE.IcosahedronGeometry(1.32, 64);
+    const atmos2Mat = new THREE.MeshBasicMaterial({
+      color: 0x5a9fd4,
+      transparent: true,
+      opacity: 0.08,
+      side: THREE.BackSide,
+    });
+    const atmos2 = new THREE.Mesh(atmos2Geo, atmos2Mat);
+    scene.add(atmos2);
 
+    // Outer glow
+    const glowGeo = new THREE.IcosahedronGeometry(1.4, 64);
+    const glowMat = new THREE.MeshBasicMaterial({
+      color: 0x7fbdff,
+      transparent: true,
+      opacity: 0.06,
+      side: THREE.BackSide,
+    });
+    const glow = new THREE.Mesh(glowGeo, glowMat);
+    scene.add(glow);
+
+    // ========== Coordinate Utils ==========
     const HANGZHOU = { lat: 30.2741, lon: 120.1551 };
     const READING = { lat: 51.4545, lon: -0.9796 };
 
-    function latLonToVec3(lat, lon, radius = 1.18) {
+    function latLonToVec3(lat, lon, radius = 1.2) {
       const phi = (90 - lat) * Math.PI / 180;
       const theta = (lon + 180) * Math.PI / 180;
       const x = -radius * Math.sin(phi) * Math.cos(theta);
@@ -409,16 +546,18 @@
       return R * c;
     }
 
+    // ========== UI Elements ==========
     const chinaMarker = document.getElementById('chinaMarker');
     const ukMarker = document.getElementById('ukMarker');
     const chinaCity = document.getElementById('chinaCity');
     const ukCity = document.getElementById('ukCity');
-    const routeLine = document.getElementById('routeLine');
+    const routePolyline = document.getElementById('routePolyline');
     const routeParticle = document.getElementById('routeParticle');
     const distanceBox = document.getElementById('distanceBox');
     const distanceValue = document.getElementById('distanceValue');
     const page1 = document.getElementById('page1');
     const page2 = document.getElementById('page2');
+    const loading = document.getElementById('loading');
 
     let transitionLocked = false;
     let isRotating = true;
@@ -427,35 +566,34 @@
     let curRotX = 0;
     let curRotY = 0;
 
+    // ========== Interaction ==========
     document.addEventListener('pointermove', (e) => {
       if (transitionLocked) return;
       const x = (e.clientX / window.innerWidth) * 2 - 1;
       const y = (e.clientY / window.innerHeight) * 2 - 1;
-      targetRotY = -x * 0.28;
-      targetRotX = y * 0.18;
+      targetRotY = -x * 0.3;
+      targetRotX = y * 0.2;
     });
 
     function updateMarkers() {
       const china = latLonToVec3(HANGZHOU.lat, HANGZHOU.lon).applyQuaternion(earth.quaternion);
       const uk = latLonToVec3(READING.lat, READING.lon).applyQuaternion(earth.quaternion);
-      const c = vec3ToScreen(china);
-      const u = vec3ToScreen(uk);
+      const cPos = vec3ToScreen(china);
+      const uPos = vec3ToScreen(uk);
 
-      chinaMarker.style.left = c.x + 'px';
-      chinaMarker.style.top = c.y + 'px';
-      chinaMarker.style.transform = 'translate(-50%, -50%)';
+      chinaMarker.style.left = cPos.x + 'px';
+      chinaMarker.style.top = cPos.y + 'px';
 
-      ukMarker.style.left = u.x + 'px';
-      ukMarker.style.top = u.y + 'px';
-      ukMarker.style.transform = 'translate(-50%, -50%)';
+      ukMarker.style.left = uPos.x + 'px';
+      ukMarker.style.top = uPos.y + 'px';
 
-      chinaCity.style.left = c.x - 56 + 'px';
-      chinaCity.style.top = c.y + 50 + 'px';
+      chinaCity.style.left = (cPos.x - 70) + 'px';
+      chinaCity.style.top = (cPos.y + 60) + 'px';
 
-      ukCity.style.left = u.x + 60 + 'px';
-      ukCity.style.top = u.y - 62 + 'px';
+      ukCity.style.left = (uPos.x + 70) + 'px';
+      ukCity.style.top = (uPos.y - 70) + 'px';
 
-      routeLine.setAttribute('points', `${c.x},${c.y} ${window.innerWidth / 2},${window.innerHeight / 2 - 30} ${u.x},${u.y}`);
+      routePolyline.setAttribute('points', `${cPos.x},${cPos.y} ${window.innerWidth / 2},${window.innerHeight / 2 - 40} ${uPos.x},${uPos.y}`);
     }
 
     function animateDistance(value) {
@@ -475,23 +613,23 @@
     }
 
     function animateParticle() {
-      const points = routeLine.getAttribute('points').split(' ');
-      const start = points[0].split(',').map(Number);
-      const mid = points[1].split(',').map(Number);
-      const end = points[2].split(',').map(Number);
+      const points = routePolyline.getAttribute('points').split(' ');
+      const [x0, y0] = points[0].split(',').map(Number);
+      const [x1, y1] = points[1].split(',').map(Number);
+      const [x2, y2] = points[2].split(',').map(Number);
       const startTime = performance.now();
-      const duration = 2600;
+      const duration = 2800;
 
       function tick(now) {
         const t = Math.min((now - startTime) / duration, 1);
-        const x = (1 - t) * (1 - t) * start[0] + 2 * (1 - t) * t * mid[0] + t * t * end[0];
-        const y = (1 - t) * (1 - t) * start[1] + 2 * (1 - t) * t * mid[1] + t * t * end[1];
+        const x = (1 - t) * (1 - t) * x0 + 2 * (1 - t) * t * x1 + t * t * x2;
+        const y = (1 - t) * (1 - t) * y0 + 2 * (1 - t) * t * y1 + t * t * y2;
         routeParticle.style.left = x + 'px';
         routeParticle.style.top = y + 'px';
-        routeParticle.classList.add('visible');
         if (t < 1) requestAnimationFrame(tick);
       }
 
+      routeParticle.classList.add('visible');
       requestAnimationFrame(tick);
     }
 
@@ -502,22 +640,22 @@
       setTimeout(() => {
         chinaMarker.classList.add('visible');
         chinaCity.classList.add('visible');
-      }, 1200);
+      }, 2000);
 
       setTimeout(() => {
         ukMarker.classList.add('visible');
         ukCity.classList.add('visible');
-      }, 2800);
+      }, 4000);
 
       setTimeout(() => {
-        document.getElementById('routeSvg').classList.add('visible');
+        document.getElementById('routeLine').classList.add('visible');
         animateParticle();
-      }, 4800);
+      }, 6000);
 
       setTimeout(() => {
         distanceBox.classList.add('show');
         animateDistance(9222.28);
-      }, 6600);
+      }, 8400);
     }
 
     canvas.addEventListener('click', () => {
@@ -526,13 +664,13 @@
       isRotating = false;
 
       const startZ = camera.position.z;
-      const endZ = 1.7;
+      const endZ = 1.8;
       const startY = camera.position.y;
-      const endY = 0.15;
+      const endY = 0.1;
       let t = 0;
 
       function zoom() {
-        t += 0.04;
+        t += 0.05;
         const e = 1 - Math.pow(1 - t, 4);
         camera.position.z = startZ + (endZ - startZ) * e;
         camera.position.y = startY + (endY - startY) * e;
@@ -543,6 +681,7 @@
       zoom();
     });
 
+    // ========== Animation Loop ==========
     function animate() {
       requestAnimationFrame(animate);
 
@@ -550,18 +689,24 @@
       curRotY += (targetRotY - curRotY) * 0.08;
 
       if (isRotating) {
-        earth.rotation.y += 0.0008;
+        earth.rotation.y += 0.0005;
       } else {
         earth.rotation.x = curRotX;
-        earth.rotation.y += 0.00045;
+        earth.rotation.y += 0.0002;
       }
 
-      outerGlow.rotation.copy(earth.rotation);
-      atmosphere.rotation.copy(earth.rotation);
+      atmos1.rotation.copy(earth.rotation);
+      atmos2.rotation.copy(earth.rotation);
+      glow.rotation.copy(earth.rotation);
 
       updateMarkers();
       renderer.render(scene, camera);
     }
+
+    // ========== Initialization ==========
+    setTimeout(() => {
+      loading.classList.remove('show');
+    }, 600);
 
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
