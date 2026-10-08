@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Our Distance - NASA Blue Marble Earth</title>
+  <title>Our Distance - Cinematic 3D Earth</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
     :root {
-      --bg-1: #020713;
-      --bg-2: #071b2d;
-      --bg-3: #0b1830;
-      --text: #edf6ff;
-      --distance: #f2f8ff;
+      --bg-1: #0a0e1a;
+      --bg-2: #0f1829;
+      --bg-3: #141d2d;
+      --text: #e8f4ff;
+      --distance: #f0f8ff;
     }
 
     * { box-sizing: border-box; }
@@ -22,9 +22,9 @@
       height: 100%;
       overflow: hidden;
       background:
-        radial-gradient(circle at 20% 20%, rgba(67, 92, 140, 0.22), transparent 20%),
-        radial-gradient(circle at 70% 15%, rgba(98, 130, 184, 0.18), transparent 16%),
-        linear-gradient(180deg, var(--bg-1), var(--bg-2) 34%, var(--bg-3));
+        radial-gradient(circle at 15% 25%, rgba(45, 100, 180, 0.15), transparent 25%),
+        radial-gradient(circle at 85% 10%, rgba(70, 120, 190, 0.12), transparent 20%),
+        linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 45%, var(--bg-3) 100%);
       color: var(--text);
       font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
       letter-spacing: 0.04em;
@@ -36,13 +36,14 @@
       inset: 0;
       pointer-events: none;
       background:
-        radial-gradient(circle at 12% 18%, rgba(255,255,255,0.9) 0 1px, transparent 2px),
-        radial-gradient(circle at 30% 62%, rgba(255,255,255,0.7) 0 1.2px, transparent 2.5px),
-        radial-gradient(circle at 56% 28%, rgba(255,255,255,0.75) 0 1px, transparent 2px),
-        radial-gradient(circle at 70% 74%, rgba(255,255,255,0.8) 0 1.3px, transparent 2.8px),
-        radial-gradient(circle at 85% 34%, rgba(255,255,255,0.8) 0 1px, transparent 2px),
-        radial-gradient(circle at 90% 72%, rgba(255,255,255,0.8) 0 1.1px, transparent 2.3px);
-      opacity: 0.85;
+        radial-gradient(circle at 8% 12%, rgba(255,255,255,1) 0 0.8px, transparent 1.5px),
+        radial-gradient(circle at 15% 78%, rgba(255,255,255,0.8) 0 1px, transparent 2px),
+        radial-gradient(circle at 28% 35%, rgba(255,255,255,0.9) 0 0.7px, transparent 1.4px),
+        radial-gradient(circle at 45% 68%, rgba(255,255,255,0.75) 0 1.1px, transparent 2.2px),
+        radial-gradient(circle at 62% 22%, rgba(255,255,255,0.85) 0 0.9px, transparent 1.8px),
+        radial-gradient(circle at 78% 55%, rgba(255,255,255,0.8) 0 1px, transparent 2px),
+        radial-gradient(circle at 92% 38%, rgba(255,255,255,0.9) 0 0.8px, transparent 1.6px);
+      opacity: 0.88;
       z-index: 1;
     }
 
@@ -64,7 +65,7 @@
       inset: 0;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 1s ease;
+      transition: opacity 1.2s ease;
     }
 
     .page.active {
@@ -72,37 +73,32 @@
       pointer-events: auto;
     }
 
-    .page-1 {
-      z-index: 100;
-    }
-
-    .page-2 {
-      z-index: 99;
-    }
+    .page-1 { z-index: 100; }
+    .page-2 { z-index: 99; }
 
     .orbit-hint {
       position: absolute;
       left: 50%;
-      bottom: 14%;
+      bottom: 12%;
       transform: translateX(-50%);
-      font-size: 0.7rem;
-      color: rgba(210, 225, 255, 0.52);
-      letter-spacing: 0.4em;
+      font-size: 0.68rem;
+      color: rgba(200, 230, 255, 0.48);
+      letter-spacing: 0.5em;
       text-transform: uppercase;
       user-select: none;
-      animation: pulse 2.8s ease-in-out infinite;
+      animation: pulse-subtle 3s ease-in-out infinite;
     }
 
     .marker {
       position: absolute;
-      width: 14px;
-      height: 14px;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
       opacity: 0;
-      transform: scale(0.5);
-      transition: opacity 0.9s ease, transform 0.9s ease;
+      transform: scale(0.3);
       pointer-events: none;
       z-index: 15;
+      transition: opacity 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .marker.visible {
@@ -111,13 +107,13 @@
     }
 
     .marker.china {
-      background: #8de9ff;
-      box-shadow: 0 0 0 2px rgba(133, 233, 255, 0.15), 0 0 26px rgba(133, 233, 255, 0.9);
+      background: #5dd9ff;
+      box-shadow: 0 0 0 3px rgba(93, 217, 255, 0.12), 0 0 32px rgba(93, 217, 255, 1), 0 0 60px rgba(93, 217, 255, 0.6);
     }
 
     .marker.uk {
-      background: #dfe9ff;
-      box-shadow: 0 0 0 2px rgba(223, 233, 255, 0.15), 0 0 26px rgba(223, 233, 255, 0.78);
+      background: #e0e8ff;
+      box-shadow: 0 0 0 3px rgba(224, 232, 255, 0.12), 0 0 32px rgba(224, 232, 255, 0.95), 0 0 60px rgba(200, 220, 255, 0.5);
     }
 
     .city {
@@ -125,11 +121,11 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       opacity: 0;
-      transform: translateY(12px) scale(0.94);
-      transition: opacity 1s ease, transform 1s ease, filter 1s ease;
-      filter: blur(8px);
+      transform: translateY(16px) scale(0.9);
+      transition: opacity 0.9s ease, transform 0.9s ease, filter 0.9s ease;
+      filter: blur(10px);
       text-transform: uppercase;
       pointer-events: none;
       z-index: 14;
@@ -142,25 +138,26 @@
     }
 
     .city .name {
-      font-size: clamp(0.72rem, 1vw, 1.2rem);
+      font-size: clamp(0.8rem, 1.1vw, 1.3rem);
       font-weight: 600;
-      letter-spacing: 0.18em;
-      text-shadow: 0 0 18px rgba(140,208,255,0.72);
+      letter-spacing: 0.16em;
+      text-shadow: 0 0 20px rgba(120, 210, 255, 0.8), 0 2px 10px rgba(0, 0, 0, 0.5);
     }
 
     .city .country {
-      font-size: clamp(0.55rem, 0.8vw, 0.8rem);
-      letter-spacing: 0.24em;
-      color: rgba(214, 228, 255, 0.72);
+      font-size: clamp(0.6rem, 0.85vw, 0.9rem);
+      letter-spacing: 0.22em;
+      color: rgba(200, 220, 255, 0.7);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
     }
 
     .distance-box {
       position: absolute;
       left: 50%;
-      bottom: 16%;
-      transform: translateX(-50%) translateY(20px);
+      bottom: 14%;
+      transform: translateX(-50%) translateY(30px);
       opacity: 0;
-      transition: opacity 0.8s ease, transform 0.8s ease;
+      transition: opacity 0.9s ease, transform 0.9s ease;
       text-align: center;
       pointer-events: none;
       z-index: 16;
@@ -172,38 +169,41 @@
     }
 
     .distance-box .label {
-      font-size: clamp(0.72rem, 1vw, 1.1rem);
-      letter-spacing: 0.18em;
-      color: rgba(226, 235, 255, 0.8);
+      font-size: clamp(0.75rem, 1.05vw, 1.2rem);
+      letter-spacing: 0.16em;
+      color: rgba(220, 240, 255, 0.85);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
     }
 
     .distance-box .value {
-      margin-top: 0.5rem;
-      font-size: clamp(2rem, 3vw, 3.6rem);
+      margin-top: 0.6rem;
+      font-size: clamp(2.2rem, 3.2vw, 4rem);
       font-weight: 300;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.04em;
       color: var(--distance);
-      text-shadow: 0 0 30px rgba(169, 213, 255, 0.5);
-      line-height: 1.1;
+      text-shadow: 0 0 40px rgba(150, 220, 255, 0.6), 0 2px 12px rgba(0, 0, 0, 0.6);
+      line-height: 1;
     }
 
     .distance-box .unit {
-      margin-top: 0.3rem;
-      font-size: clamp(0.7rem, 0.8vw, 0.95rem);
-      letter-spacing: 0.14em;
-      color: rgba(212, 226, 255, 0.75);
+      margin-top: 0.4rem;
+      font-size: clamp(0.75rem, 0.9vw, 1.1rem);
+      letter-spacing: 0.12em;
+      color: rgba(200, 220, 255, 0.75);
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
     }
 
     .route-line {
       position: absolute;
-      stroke: rgba(132, 203, 255, 0.75);
+      stroke: rgba(120, 200, 255, 0.8);
       fill: none;
       stroke-linecap: round;
-      filter: drop-shadow(0 0 8px rgba(132, 203, 255, 0.8));
-      stroke-dasharray: 1000;
-      stroke-dashoffset: 1000;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 0 12px rgba(120, 200, 255, 0.9));
+      stroke-dasharray: 1200;
+      stroke-dashoffset: 1200;
       opacity: 0;
-      transition: stroke-dashoffset 2.6s ease, opacity 0.6s ease;
+      transition: stroke-dashoffset 3s cubic-bezier(0.42, 0, 0.58, 1), opacity 0.7s ease;
       pointer-events: none;
       z-index: 13;
     }
@@ -213,42 +213,59 @@
       stroke-dashoffset: 0;
     }
 
+    .route-particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(200, 240, 255, 1);
+      opacity: 0;
+      box-shadow: 0 0 16px rgba(200, 240, 255, 1), 0 0 32px rgba(150, 220, 255, 0.8);
+      pointer-events: none;
+      z-index: 13;
+    }
+
+    .route-particle.visible {
+      opacity: 1;
+    }
+
     .loading {
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      color: rgba(220, 235, 255, 0.6);
-      font-size: 0.9rem;
-      letter-spacing: 0.2em;
+      color: rgba(200, 230, 255, 0.7);
+      font-size: 0.95rem;
+      letter-spacing: 0.25em;
       z-index: 3;
       opacity: 0;
-      transition: opacity 0.6s ease;
+      transition: opacity 0.8s ease;
+      text-transform: uppercase;
     }
 
     .loading.show {
       opacity: 1;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 0.35; transform: translateX(-50%) scale(1); }
-      50% { opacity: 0.9; transform: translateX(-50%) scale(1.04); }
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 0.3; transform: translateX(-50%) scale(1); }
+      50% { opacity: 0.8; transform: translateX(-50%) scale(1.05); }
     }
 
     @media (max-width: 700px) {
-      .city .name { letter-spacing: 0.11em; }
-      .city .country { letter-spacing: 0.14em; }
+      .city .name { letter-spacing: 0.1em; }
+      .city .country { letter-spacing: 0.15em; }
       .distance-box .label { letter-spacing: 0.12em; }
     }
   </style>
 </head>
 <body>
-  <div class="loading show" id="loading">Loading NASA Blue Marble...</div>
+  <div class="loading show" id="loading">Initializing Cinematic Scene...</div>
   <canvas id="canvas"></canvas>
 
   <div class="ui-overlay">
     <div class="page page-1 active" id="page1">
-      <div class="orbit-hint">Click the Earth</div>
+      <div class="orbit-hint">Click to Begin</div>
     </div>
 
     <div class="page page-2" id="page2">
@@ -266,11 +283,13 @@
       </div>
 
       <svg id="routeSvg" style="position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10;">
-        <polyline id="routeLine" class="route-line" stroke-width="2" />
+        <polyline id="routeLine" class="route-line" stroke-width="2.5" />
       </svg>
 
+      <div class="route-particle" id="routeParticle"></div>
+
       <div class="distance-box" id="distanceBox">
-        <div class="label">我们的距离:</div>
+        <div class="label">我们的距离</div>
         <div class="value" id="distanceValue">0</div>
         <div class="unit">公里</div>
       </div>
@@ -278,41 +297,198 @@
   </div>
 
   <script>
-    // Scene setup
+    // ============ Scene Setup ============
     const canvas = document.getElementById('canvas');
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100000);
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    const camera = new THREE.PerspectiveCamera(
+      65, 
+      window.innerWidth / window.innerHeight, 
+      0.1, 
+      100000
+    );
+    const renderer = new THREE.WebGLRenderer({ 
+      canvas, 
+      antialias: true, 
+      alpha: true,
+      precision: 'highp'
+    });
 
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x000000, 0);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-    camera.position.z = 2.5;
+    camera.position.z = 2.6;
+    camera.position.y = 0.2;
 
-    // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    // ============ Lighting ============
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.45);
     scene.add(ambientLight);
 
-    const sunLight = new THREE.DirectionalLight(0xffffff, 1.3);
-    sunLight.position.set(2, 1.5, 1.5);
+    const sunLight = new THREE.DirectionalLight(0xffffff, 1.4);
+    sunLight.position.set(2.2, 1.2, 1.8);
+    sunLight.castShadow = true;
+    sunLight.shadow.mapSize.width = 2048;
+    sunLight.shadow.mapSize.height = 2048;
     scene.add(sunLight);
 
-    // Glow effect layer
-    const canvas2dGlow = document.createElement('canvas');
-    canvas2dGlow.width = 128;
-    canvas2dGlow.height = 128;
-    const ctxGlow = canvas2dGlow.getContext('2d');
-    const gradGlow = ctxGlow.createRadialGradient(64, 64, 0, 64, 64, 90);
-    gradGlow.addColorStop(0, 'rgba(100, 200, 255, 0.4)');
-    gradGlow.addColorStop(0.5, 'rgba(100, 200, 255, 0.1)');
-    gradGlow.addColorStop(1, 'rgba(100, 200, 255, 0)');
-    ctxGlow.fillStyle = gradGlow;
-    ctxGlow.fillRect(0, 0, 128, 128);
+    const rimLight = new THREE.DirectionalLight(0x4a7fff, 0.3);
+    rimLight.position.set(-2, 0.5, -1.5);
+    scene.add(rimLight);
 
-    // Coordinates
-    const HANGZHOU = { lat: 30.2741, lon: 120.1551 }; // 杭州
-    const READING = { lat: 51.4545, lon: -0.9796 };   // 雷丁
+    // ============ Create High-Res Earth Texture ============
+    function createEarthTexture() {
+      const canvas2d = document.createElement('canvas');
+      canvas2d.width = 4096;
+      canvas2d.height = 2048;
+      const ctx = canvas2d.getContext('2d', { willReadFrequently: true });
+
+      // Deep ocean base
+      const oceanGrad = ctx.createLinearGradient(0, 0, 0, canvas2d.height);
+      oceanGrad.addColorStop(0, '#0a2a5a');
+      oceanGrad.addColorStop(0.3, '#083a6a');
+      oceanGrad.addColorStop(0.5, '#062a4a');
+      oceanGrad.addColorStop(0.7, '#0a1a3a');
+      oceanGrad.addColorStop(1, '#040a1a');
+      ctx.fillStyle = oceanGrad;
+      ctx.fillRect(0, 0, canvas2d.width, canvas2d.height);
+
+      // Add subtle wave patterns
+      ctx.strokeStyle = 'rgba(20, 50, 100, 0.1)';
+      ctx.lineWidth = 0.5;
+      for (let i = 0; i < canvas2d.width; i += 40) {
+        ctx.beginPath();
+        ctx.moveTo(i, 0);
+        ctx.quadraticCurveTo(i + 20, 30, i + 40, 0);
+        ctx.stroke();
+      }
+
+      // Continents with realistic colors
+      const landColors = ['#1a5a2a', '#1f6a35', '#2a7a40', '#15503a'];
+      
+      function drawContinent(x, y, width, height, iterations) {
+        for (let i = 0; i < iterations; i++) {
+          ctx.fillStyle = landColors[Math.floor(Math.random() * landColors.length)];
+          const px = x + Math.random() * width;
+          const py = y + Math.random() * height;
+          const size = Math.random() * 40 + 5;
+          ctx.fillRect(px, py, size, size);
+        }
+      }
+
+      // North America
+      drawContinent(180, 200, 380, 300, 600);
+
+      // South America
+      drawContinent(280, 480, 180, 320, 400);
+
+      // Europe
+      drawContinent(800, 220, 200, 180, 350);
+
+      // Africa
+      drawContinent(900, 420, 280, 360, 500);
+
+      // Middle East & Central Asia
+      drawContinent(1100, 340, 350, 280, 450);
+
+      // East Asia
+      drawContinent(1500, 280, 420, 320, 600);
+
+      // Southeast Asia
+      drawContinent(1700, 480, 200, 150, 300);
+
+      // Australia
+      drawContinent(1750, 600, 160, 140, 250);
+
+      // Greenland
+      drawContinent(550, 80, 120, 140, 200);
+
+      // Antarctica (simplified)
+      ctx.fillStyle = '#2a4a5a';
+      ctx.fillRect(0, 900, canvas2d.width, 148);
+
+      // Add mountain/elevation shadows
+      ctx.fillStyle = 'rgba(5, 15, 35, 0.3)';
+      for (let i = 0; i < 800; i++) {
+        const x = Math.random() * canvas2d.width;
+        const y = Math.random() * canvas2d.height;
+        const size = Math.random() * 15 + 2;
+        ctx.fillRect(x, y, size, size * 0.6);
+      }
+
+      const texture = new THREE.CanvasTexture(canvas2d);
+      texture.magFilter = THREE.LinearFilter;
+      texture.minFilter = THREE.LinearMipmapLinearFilter;
+      texture.anisotropy = renderer.capabilities.maxAnisotropy;
+      return texture;
+    }
+
+    // ============ Create Earth ============
+    const earthGeometry = new THREE.IcosahedronGeometry(1, 64);
+    const earthTexture = createEarthTexture();
+    const earthMaterial = new THREE.MeshPhongMaterial({
+      map: earthTexture,
+      shininess: 8,
+      emissive: 0x1a1a2a,
+      emissiveMap: earthTexture,
+      emissiveIntensity: 0.15,
+      side: THREE.FrontSide,
+    });
+
+    const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+    earth.castShadow = true;
+    earth.receiveShadow = true;
+    scene.add(earth);
+
+    // Atmosphere - multiple layers for depth
+    const atmosphereGeometry1 = new THREE.IcosahedronGeometry(1.025, 32);
+    const atmosphereMaterial1 = new THREE.MeshBasicMaterial({
+      color: 0x5a9fd4,
+      transparent: true,
+      opacity: 0.25,
+      side: THREE.BackSide,
+      fog: false,
+    });
+    const atmosphere1 = new THREE.Mesh(atmosphereGeometry1, atmosphereMaterial1);
+    scene.add(atmosphere1);
+
+    const atmosphereGeometry2 = new THREE.IcosahedronGeometry(1.08, 32);
+    const atmosphereMaterial2 = new THREE.MeshBasicMaterial({
+      color: 0x4a7fd4,
+      transparent: true,
+      opacity: 0.1,
+      side: THREE.BackSide,
+      fog: false,
+    });
+    const atmosphere2 = new THREE.Mesh(atmosphereGeometry2, atmosphereMaterial2);
+    scene.add(atmosphere2);
+
+    // Glow effect
+    const glowCanvas = document.createElement('canvas');
+    glowCanvas.width = 512;
+    glowCanvas.height = 512;
+    const glowCtx = glowCanvas.getContext('2d');
+    const glowGrad = glowCtx.createRadialGradient(256, 256, 0, 256, 256, 350);
+    glowGrad.addColorStop(0, 'rgba(100, 200, 255, 0.6)');
+    glowGrad.addColorStop(0.4, 'rgba(100, 200, 255, 0.2)');
+    glowGrad.addColorStop(1, 'rgba(100, 200, 255, 0)');
+    glowCtx.fillStyle = glowGrad;
+    glowCtx.fillRect(0, 0, 512, 512);
+
+    const glowGeometry = new THREE.IcosahedronGeometry(1.12, 32);
+    const glowTexture = new THREE.CanvasTexture(glowCanvas);
+    const glowMaterial = new THREE.MeshBasicMaterial({
+      map: glowTexture,
+      transparent: true,
+      side: THREE.BackSide,
+      fog: false,
+    });
+    const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+    scene.add(glow);
+
+    // ============ Coordinates & Utils ============
+    const HANGZHOU = { lat: 30.2741, lon: 120.1551 };
+    const READING = { lat: 51.4545, lon: -0.9796 };
 
     function latLonToVector3(lat, lon, radius = 1) {
       const phi = (90 - lat) * Math.PI / 180;
@@ -334,7 +510,7 @@
     }
 
     function calculateDistance(lat1, lon1, lat2, lon2) {
-      const R = 6371; // Earth radius in km
+      const R = 6371;
       const dLat = (lat2 - lat1) * Math.PI / 180;
       const dLon = (lon2 - lon1) * Math.PI / 180;
       const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
@@ -344,7 +520,7 @@
       return R * c;
     }
 
-    // UI elements
+    // ============ UI Elements ============
     const page1 = document.getElementById('page1');
     const page2 = document.getElementById('page2');
     const chinaMarker = document.getElementById('chinaMarker');
@@ -354,194 +530,35 @@
     const distanceBox = document.getElementById('distanceBox');
     const distanceValue = document.getElementById('distanceValue');
     const routeLine = document.getElementById('routeLine');
-    const routeSvg = document.getElementById('routeSvg');
+    const routeParticle = document.getElementById('routeParticle');
     const loadingEl = document.getElementById('loading');
 
     let transitionLocked = false;
-    let rotationVelocity = 0.0003;
+    let rotationVelocity = 0.00015;
     let isRotating = true;
-    let earthMesh = null;
+    let currentRotation = { x: 0, y: 0 };
+    let targetRotation = { x: 0, y: 0 };
 
-    // Load NASA Blue Marble texture
-    const textureLoader = new THREE.TextureLoader();
-    textureLoader.load(
-      'https://www.nasaspaceflight.com/wp-content/uploads/2013/10/earth_lights_lrg.jpg',
-      function (texture) {
-        createEarth(texture);
-      },
-      undefined,
-      function (err) {
-        console.warn('Failed to load primary texture, using fallback', err);
-        // Fallback to a different URL
-        textureLoader.load(
-          'https://eoimages.gsfc.nasa.gov/images/imagerecords/73000/73776/GEBCO_NOAA_8bit_elevation_tidemarked_geo.tif',
-          function (texture) {
-            createEarth(texture);
-          },
-          undefined,
-          function (err2) {
-            console.warn('Fallback also failed, creating procedural Earth');
-            createProceduralEarth();
-          }
-        );
-      }
-    );
-
-    function createEarth(texture) {
-      const geometry = new THREE.SphereGeometry(1, 512, 512);
-      
-      const material = new THREE.MeshPhongMaterial({
-        map: texture,
-        shininess: 3,
-        emissive: 0x1a1a1a,
-      });
-
-      earthMesh = new THREE.Mesh(geometry, material);
-      scene.add(earthMesh);
-
-      // Atmosphere glow
-      const atmosphereGeometry = new THREE.SphereGeometry(1.05, 256, 256);
-      const atmosphereMaterial = new THREE.MeshBasicMaterial({
-        color: 0x87ceeb,
-        transparent: true,
-        opacity: 0.15,
-        side: THREE.BackSide,
-      });
-      const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
-      scene.add(atmosphere);
-
-      // Outer glow
-      const glowGeometry = new THREE.SphereGeometry(1.08, 128, 128);
-      const glowTexture = new THREE.CanvasTexture(canvas2dGlow);
-      const glowMaterial = new THREE.MeshBasicMaterial({
-        map: glowTexture,
-        transparent: true,
-        side: THREE.BackSide,
-      });
-      const glow = new THREE.Mesh(glowGeometry, glowMaterial);
-      scene.add(glow);
-
-      loadingEl.classList.remove('show');
-    }
-
-    function createProceduralEarth() {
-      const geometry = new THREE.SphereGeometry(1, 512, 512);
-      
-      // Create canvas texture (high quality procedural)
-      const canvas2d = document.createElement('canvas');
-      canvas2d.width = 2048;
-      canvas2d.height = 1024;
-      const ctx = canvas2d.getContext('2d');
-
-      // Ocean
-      const oceanGradient = ctx.createLinearGradient(0, 0, 0, canvas2d.height);
-      oceanGradient.addColorStop(0, '#0d4a7a');
-      oceanGradient.addColorStop(0.5, '#0a3a5a');
-      oceanGradient.addColorStop(1, '#081f3a');
-      ctx.fillStyle = oceanGradient;
-      ctx.fillRect(0, 0, canvas2d.width, canvas2d.height);
-
-      // Continents with detail
-      const continentColor = '#1a5a3a';
-      ctx.fillStyle = continentColor;
-
-      // North America
-      for (let i = 0; i < 400; i++) {
-        const x = Math.random() * 350 + 150;
-        const y = Math.random() * 280 + 180;
-        const size = Math.random() * 30 + 3;
-        ctx.fillRect(x, y, size, size);
-      }
-
-      // South America
-      for (let i = 0; i < 250; i++) {
-        const x = Math.random() * 200 + 250;
-        const y = Math.random() * 350 + 400;
-        const size = Math.random() * 25 + 2;
-        ctx.fillRect(x, y, size, size);
-      }
-
-      // Europe & Africa
-      for (let i = 0; i < 500; i++) {
-        const x = Math.random() * 400 + 750;
-        const y = Math.random() * 400 + 200;
-        const size = Math.random() * 25 + 3;
-        ctx.fillRect(x, y, size, size);
-      }
-
-      // Asia
-      for (let i = 0; i < 600; i++) {
-        const x = Math.random() * 600 + 1200;
-        const y = Math.random() * 350 + 150;
-        const size = Math.random() * 28 + 3;
-        ctx.fillRect(x, y, size, size);
-      }
-
-      // Australia
-      for (let i = 0; i < 150; i++) {
-        const x = Math.random() * 150 + 1600;
-        const y = Math.random() * 150 + 550;
-        const size = Math.random() * 20 + 2;
-        ctx.fillRect(x, y, size, size);
-      }
-
-      const texture = new THREE.CanvasTexture(canvas2d);
-      texture.magFilter = THREE.LinearFilter;
-      texture.minFilter = THREE.LinearMipmapLinearFilter;
-
-      const material = new THREE.MeshPhongMaterial({
-        map: texture,
-        shininess: 5,
-        emissive: 0x0a0a0a,
-      });
-
-      earthMesh = new THREE.Mesh(geometry, material);
-      scene.add(earthMesh);
-
-      // Atmosphere
-      const atmosphereGeometry = new THREE.SphereGeometry(1.05, 256, 256);
-      const atmosphereMaterial = new THREE.MeshBasicMaterial({
-        color: 0x87ceeb,
-        transparent: true,
-        opacity: 0.18,
-        side: THREE.BackSide,
-      });
-      const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
-      scene.add(atmosphere);
-
-      // Glow
-      const glowGeometry = new THREE.SphereGeometry(1.08, 128, 128);
-      const glowTexture = new THREE.CanvasTexture(canvas2dGlow);
-      const glowMaterial = new THREE.MeshBasicMaterial({
-        map: glowTexture,
-        transparent: true,
-        side: THREE.BackSide,
-      });
-      const glow = new THREE.Mesh(glowGeometry, glowMaterial);
-      scene.add(glow);
-
-      loadingEl.classList.remove('show');
-    }
-
-    // Mouse move tilt
+    // ============ Mouse Interaction ============
     document.addEventListener('pointermove', (e) => {
-      if (transitionLocked || !earthMesh) return;
+      if (transitionLocked) return;
       const x = (e.clientX / window.innerWidth) * 2 - 1;
       const y = (e.clientY / window.innerHeight) * 2 - 1;
-      earthMesh.rotation.y = -x * 0.3;
-      earthMesh.rotation.x = y * 0.2;
+      targetRotation.y = -x * 0.25;
+      targetRotation.x = y * 0.15;
     });
 
-    // Update marker positions
-    function updateMarkers() {
-      if (!earthMesh) return;
+    document.addEventListener('pointerleave', () => {
+      targetRotation = { x: 0, y: 0 };
+    });
 
+    // ============ Update Markers ============
+    function updateMarkers() {
       const chinaPos = latLonToVector3(HANGZHOU.lat, HANGZHOU.lon);
       const readingPos = latLonToVector3(READING.lat, READING.lon);
 
-      // Transform to world coordinates
-      chinaPos.applyQuaternion(earthMesh.quaternion);
-      readingPos.applyQuaternion(earthMesh.quaternion);
+      chinaPos.applyQuaternion(earth.quaternion);
+      readingPos.applyQuaternion(earth.quaternion);
 
       const chinaScreen = vector3ToScreen(chinaPos);
       const readingScreen = vector3ToScreen(readingPos);
@@ -554,35 +571,39 @@
       ukMarker.style.top = readingScreen.y + 'px';
       ukMarker.style.transform = 'translate(-50%, -50%)';
 
-      chinaCity.style.left = (chinaScreen.x - 60) + 'px';
-      chinaCity.style.top = (chinaScreen.y + 50) + 'px';
+      chinaCity.style.left = (chinaScreen.x - 70) + 'px';
+      chinaCity.style.top = (chinaScreen.y + 60) + 'px';
 
-      ukCity.style.left = (readingScreen.x + 60) + 'px';
-      ukCity.style.top = (readingScreen.y - 60) + 'px';
+      ukCity.style.left = (readingScreen.x + 70) + 'px';
+      ukCity.style.top = (readingScreen.y - 70) + 'px';
 
-      // Update route line
       const points = [chinaScreen.x, chinaScreen.y, readingScreen.x, readingScreen.y];
       routeLine.setAttribute('points', points.join(' '));
     }
 
-    // Click to transition
+    // ============ Transition Animation ============
     canvas.addEventListener('click', () => {
-      if (transitionLocked || !earthMesh) return;
+      if (transitionLocked) return;
       transitionLocked = true;
       isRotating = false;
 
-      // Smooth zoom camera
+      // Cinematic zoom
       let startZ = camera.position.z;
-      let targetZ = 1.2;
+      let targetZ = 1.3;
+      let startY = camera.position.y;
+      let targetY = 0.05;
       let progress = 0;
 
       function zoomCamera() {
-        progress += 0.05;
+        progress += 0.04;
         if (progress <= 1) {
-          camera.position.z = startZ + (targetZ - startZ) * (1 - Math.pow(1 - progress, 3));
+          const eased = 1 - Math.pow(1 - progress, 4);
+          camera.position.z = startZ + (targetZ - startZ) * eased;
+          camera.position.y = startY + (targetY - startY) * eased;
           requestAnimationFrame(zoomCamera);
         } else {
           camera.position.z = targetZ;
+          camera.position.y = targetY;
           showPage2();
         }
       }
@@ -594,25 +615,60 @@
       page1.classList.remove('active');
       page2.classList.add('active');
 
+      // Phase 1: Hangzhou marker + city
       setTimeout(() => {
         chinaMarker.classList.add('visible');
         chinaCity.classList.add('visible');
       }, 2000);
 
+      // Phase 2: Reading marker + city
       setTimeout(() => {
         ukMarker.classList.add('visible');
         ukCity.classList.add('visible');
       }, 4000);
 
+      // Phase 3: Route line
       setTimeout(() => {
         routeLine.classList.add('visible');
+        animateRouteParticle();
       }, 6000);
 
+      // Phase 4: Distance counter
       setTimeout(() => {
         distanceBox.classList.add('show');
         const distance = calculateDistance(HANGZHOU.lat, HANGZHOU.lon, READING.lat, READING.lon);
         animateDistance(distance);
       }, 8000);
+    }
+
+    function animateRouteParticle() {
+      const startTime = performance.now();
+      const duration = 2600;
+
+      function draw(now) {
+        const t = Math.min((now - startTime) / duration, 1);
+        const path = routeLine.getAttribute('points');
+        if (!path) {
+          requestAnimationFrame(draw);
+          return;
+        }
+
+        const points = path.split(' ').map(Number);
+        const x1 = points[0], y1 = points[1];
+        const x2 = points[2], y2 = points[3];
+
+        const x = x1 + (x2 - x1) * t;
+        const y = y1 + (y2 - y1) * t;
+
+        routeParticle.style.left = x + 'px';
+        routeParticle.style.top = y + 'px';
+        routeParticle.style.transform = 'translate(-50%, -50%)';
+
+        if (t < 1) requestAnimationFrame(draw);
+      }
+
+      routeParticle.classList.add('visible');
+      requestAnimationFrame(draw);
     }
 
     function animateDistance(finalValue) {
@@ -631,27 +687,41 @@
       requestAnimationFrame(draw);
     }
 
-    // Animation loop
+    // ============ Animation Loop ============
     function animate() {
       requestAnimationFrame(animate);
 
-      if (earthMesh && isRotating) {
-        earthMesh.rotation.y += rotationVelocity;
+      // Smooth rotation interpolation
+      currentRotation.x += (targetRotation.x - currentRotation.x) * 0.08;
+      currentRotation.y += (targetRotation.y - currentRotation.y) * 0.08;
+
+      if (isRotating) {
+        earth.rotation.y += rotationVelocity;
+      } else {
+        earth.rotation.x = currentRotation.x;
+        earth.rotation.y += rotationVelocity * 0.5;
+        earth.rotation.y += currentRotation.y - earth.rotation.y * 0.1;
       }
 
-      if (earthMesh) {
-        updateMarkers();
-      }
+      atmosphere1.rotation.copy(earth.rotation);
+      atmosphere2.rotation.copy(earth.rotation);
+      glow.rotation.copy(earth.rotation);
 
+      updateMarkers();
       renderer.render(scene, camera);
     }
 
-    // Handle window resize
+    // ============ Window Resize ============
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
+
+    // Initialize
+    setTimeout(() => {
+      loadingEl.classList.remove('show');
+    }, 800);
 
     animate();
   </script>
